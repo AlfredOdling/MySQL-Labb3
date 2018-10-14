@@ -1,40 +1,69 @@
-import React, { Component } from 'react';
-
-import logo from './logo.svg';
-
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
+import { callGet } from './utils'
+import EditOrderFields from './EditOrderFields'
+import EditCustomerFields from './EditCustomerFields'
+import UploadFields from './UploadFields'
 
 class App extends Component {
   state = {
-    response: ''
-  };
-
-  componentDidMount() {
-    this.callApi()
-      .then(res => this.setState({ response: res.express }))
-      .catch(err => console.log(err));
+    orders: [],
+    customers: [],
+    radio1: true,
+    radio2: false,
   }
 
-  callApi = async () => {
-    const response = await fetch('/api/hello');
-    const body = await response.json();
+  async componentDidMount() {
+    this.callGetCustomers()
+    this.callGetOrders()
+  }
 
-    if (response.status !== 200) throw Error(body.message);
+  callGetOrders = async () => {
+    this.setState({
+      orders: await callGet('/orders')
+    })
+  }
 
-    return body;
-  };
+  callGetCustomers = async () => {
+    this.setState({
+      customers: await callGet('/customers')
+    })
+  }
+
+  onChange = (field, e) => {
+
+    this.setState({
+      radio1: !this.state.radio1,
+      radio2: this.state.radio2
+    })
+    e.preventDefault()
+  }
 
   render() {
+    const { orders, customers } = this.state
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">{this.state.response}</p>
+      <div className="center-content"><br />
+        <UploadFields
+          callGetCustomers={this.callGetCustomers}
+          callGetOrders={this.callGetOrders} />
+
+        <form>
+          <p>hej1</p>
+          <input type="radio" checked={this.state.radio1} onChange={e => this.onChange(1, e)} />
+          <p>hej2</p>
+          <input type="radio" checked={this.state.radio2} onChange={e => this.onChange(2, e)} />
+        </form>
+
+        <EditCustomerFields
+          callGetCustomers={this.callGetCustomers}
+          customers={customers} /><br />
+
+        <EditOrderFields
+          callGetOrders={this.callGetOrders}
+          orders={orders} />
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
