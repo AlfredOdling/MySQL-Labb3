@@ -4,6 +4,7 @@ import { callGet } from './utils'
 import EditOrderFields from './EditOrderFields'
 import EditCustomerFields from './EditCustomerFields'
 import UploadFields from './UploadFields'
+import Search from './Search'
 
 class App extends Component {
   state = {
@@ -47,12 +48,7 @@ class App extends Component {
           callGetCustomers={this.callGetCustomers}
           callGetOrders={this.callGetOrders} />
 
-        <form>
-          <p>hej1</p>
-          <input type="radio" checked={this.state.radio1} onChange={e => this.onChange(1, e)} />
-          <p>hej2</p>
-          <input type="radio" checked={this.state.radio2} onChange={e => this.onChange(2, e)} />
-        </form>
+        <Search />
 
         <EditCustomerFields
           callGetCustomers={this.callGetCustomers}

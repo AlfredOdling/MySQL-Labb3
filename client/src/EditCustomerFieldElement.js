@@ -6,12 +6,17 @@ class EditCustomerFieldElement extends Component {
   state = {
     customer_id: '',
     customer_name: '',
+    customer_city: '',
     initLoad: false
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { item } = nextProps
-    const { customer_id, customer_name } = item
+    const {
+      customer_id,
+      customer_name,
+      customer_city,
+    } = item
     let returnStatement = []
 
     if (item !== prevState.item && !prevState.initLoad) {
@@ -19,13 +24,18 @@ class EditCustomerFieldElement extends Component {
         initLoad: true,
         customer_id,
         customer_name,
+        customer_city,
       }
     }
     return returnStatement
   }
 
   renderCustomer = () => {
-    const { customer_id, customer_name } = this.state
+    const {
+      customer_id,
+      customer_name,
+      customer_city
+    } = this.state
 
     return (
       <form>
@@ -39,6 +49,11 @@ class EditCustomerFieldElement extends Component {
           required
           value={customer_name}
           onChange={e => this.onChange('customer_name', e)} />
+        <input
+          type="text"
+          required
+          value={customer_city}
+          onChange={e => this.onChange('customer_city', e)} />
         <input
           type="submit"
           value="Delete"
@@ -70,10 +85,18 @@ class EditCustomerFieldElement extends Component {
   updateCustomer = async e => {
     e.preventDefault()
     const { callGetCustomers } = this.props
-    const { customer_id, customer_name } = this.state
+    const {
+      customer_id,
+      customer_name,
+      customer_city
+    } = this.state
 
+    let body = {
+      customer_id,
+      customer_name,
+      customer_city,
+    }
     let route = '/update_customer'
-    let body = { customer_id, customer_name }
 
     const status = await callPost(route, body)
     if (status === 200) {

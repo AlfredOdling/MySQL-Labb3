@@ -8,6 +8,7 @@ class UploadFields extends Component {
     ord_amount: '',
     cust_customer_id: '',
     cust_customer_name: '',
+    cust_customer_city: '',
   }
 
   uploadOrder = async e => {
@@ -18,6 +19,7 @@ class UploadFields extends Component {
     const {
       ord_order_id,
       ord_customer_id,
+      cust_customer_city,
       ord_amount
     } = this.state
 
@@ -25,6 +27,7 @@ class UploadFields extends Component {
     let body = {
       ord_order_id,
       ord_customer_id,
+      cust_customer_city,
       ord_amount
     }
 
@@ -33,6 +36,7 @@ class UploadFields extends Component {
       this.setState({
         ord_order_id: '',
         ord_customer_id: '',
+        cust_customer_city: '',
         ord_amount: '',
       })
       callGetOrders()
@@ -48,13 +52,15 @@ class UploadFields extends Component {
     const { callGetCustomers } = this.props
     const {
       cust_customer_id,
-      cust_customer_name
+      cust_customer_name,
+      cust_customer_city,
     } = this.state
 
     let route = '/upload_customer'
     let body = {
       cust_customer_id,
-      cust_customer_name
+      cust_customer_name,
+      cust_customer_city,
     }
 
     const status = await callPost(route, body)
@@ -62,6 +68,7 @@ class UploadFields extends Component {
       this.setState({
         cust_customer_id: '',
         cust_customer_name: '',
+        cust_customer_city: '',
       })
       callGetCustomers()
     } else {
@@ -83,6 +90,7 @@ class UploadFields extends Component {
       ord_amount,
       cust_customer_id,
       cust_customer_name,
+      cust_customer_city,
     } = this.state
 
     return (
@@ -102,6 +110,12 @@ class UploadFields extends Component {
               required
               value={cust_customer_name}
               onChange={e => this.onChange('cust_customer_name', e)} />
+            <input
+              type="text"
+              placeholder="Customer City"
+              required
+              value={cust_customer_city}
+              onChange={e => this.onChange('cust_customer_city', e)} />
             <input
               type="submit"
               value="Upload"
