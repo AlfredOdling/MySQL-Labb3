@@ -62,11 +62,6 @@ app.get('/customers', (req, res) => {
   executeQuery(res, query, null)
 })
 
-app.get('/all', (req, res) => {
-  const query = 'SELECT * FROM orders'
-  executeQuery(res, query, null)
-})
-
 // --------- POST ---------
 
 app.post('/upload_order', (req, res) => {
@@ -77,8 +72,8 @@ app.post('/upload_order', (req, res) => {
   } = req.body
 
   const query = 
-    'INSERT INTO orders (order_id, customer_id, amount)'+
-    ' VALUES (?, ?, ?)'
+    'INSERT INTO orders (order_id, customer_id, amount) '+
+    'VALUES (?, ?, ?)'
 
   const queryArr = [ord_order_id, ord_customer_id, ord_amount]
 
@@ -89,15 +84,61 @@ app.post('/upload_customer', (req, res) => {
   const {
     cust_customer_id,
     cust_customer_name,
+    cust_customer_city,
   } = req.body
 
   const query = 
-    'INSERT INTO customers (customer_id, customer_name)'+
-    ' VALUES (?, ?)'
+    'INSERT INTO customers (customer_id, customer_name, customer_city)'+
+    ' VALUES (?, ?, ?)'
 
-  const queryArr = [cust_customer_id, cust_customer_name]
+  const queryArr = [cust_customer_id, cust_customer_name, cust_customer_city]
 
   executeQuery(res, query, queryArr)
+})
+
+app.post('/search_orders', (req, res) => {
+  const { 
+    searchString,
+    sortValue,
+    filterValue
+  } = req.body
+
+  let value1 = 0
+  let value2 = 99
+  
+  if (filterValue === 2){
+    value1 = 100
+    value2 = 499
+  } else if (filterValue === 3){
+    value1 = 500
+    value2 = 100000
+  }
+
+  const query =
+    'SELECT *'+
+    ' FROM orders'+
+    ' WHERE'+
+      ' order_id='+searchString+' OR'+
+      ' customer_id='+searchString+' OR'+
+      ' amount='+searchString+
+    ' ORDER BY amount'+
+        ' BETWEEN '+value1+' AND '+value2+' '+
+      sortValue // ASC | DESC
+
+  executeQuery(res, query, null)
+})
+
+app.post('/search_customers', (req, res) => {
+  const { searchString } = req.body
+
+  const query =
+    'SELECT * '+
+    'FROM customers '+
+    'WHERE '+
+      'customer_id='+searchString+' OR '+
+      'customer_name='+searchString
+
+  executeQuery(res, query, null)
 })
 
 // --------- DELETE ---------
@@ -125,11 +166,17 @@ app.post('/delete_order', (req, res) => {
 // --------- UPDATE ---------
 
 app.post('/update_customer', (req, res) => {
-  const { customer_id, customer_name } = req.body
+    const { 
+      customer_id,
+      customer_name,
+      customer_city
+    } = req.body
   
   const query =
   'UPDATE customers'+
-  ' SET customer_name='+customer_name+
+  ' SET'+
+    ' customer_name='+customer_name+
+    ' cust_customer_city='+cust_customer_city+
   ' WHERE customer_id='+customer_id
 
   executeQuery(res, query, null)
